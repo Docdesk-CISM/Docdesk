@@ -1,0 +1,25 @@
+# Project identification
+sonar.projectKey=herathua_CM4730_Assignment_Docdesk
+sonar.organization=herathua  # Replace with your SonarCloud organization key
+
+# Project metadata
+sonar.projectName=CM4730_Assignment_Docdesk
+sonar.projectVersion=1.0
+
+# Source code location
+sonar.sources=Docdesk-backend,Dockdesk-frontend,Dockdesk-admin-portal
+
+# Exclusions
+sonar.exclusions=**/node_modules/**,**/*.test.js,**/*.spec.js,**/coverage/**,**/dist/**,**/build/**
+
+# Backend specific
+sonar.javascript.lcov.reportPaths=Docdesk-backend/coverage/lcov.info
+
+# Coverage exclusions
+sonar.coverage.exclusions=**/*.test.js,**/*.spec.js,**/tests/**
+
+# Encoding
+sonar.sourceEncoding=UTF-8
+
+# Language
+sonar.language=js

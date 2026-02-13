@@ -1,0 +1,31 @@
+*{
+  margin: 0;
+  padding: 0;
+
+}
+
+.authPageContainer{
+  overflow: hidden;
+}
+
+.backImg{
+  height: 100vh;
+  
+}
+
+.titleAuth{
+  margin-top: 80px ;
+  text-align: center;
+}
+
+
+.leftPanel{
+  overflow: hidden;
+  width: 64%;
+  float: left;
+}
+.rightPanel{
+  height:100vh;
+  width:35%;
+  float:left;
+}

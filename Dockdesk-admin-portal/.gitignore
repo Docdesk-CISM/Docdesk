@@ -1,0 +1,42 @@
+# Node.js dependencies
+node_modules/
+* node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Build outputs
+dist/
+build/
+web-build/
+
+# React Native / Expo
+.expo/
+*.jks
+*.keystore
+*.p8
+*.p12
+*.key
+*.mobileprovision
+*.orig.*
+
+# Metro
+.metro-cache/
+.metro-health-check*
+
+# TypeScript
+*.tsbuildinfo
+
+# Environment files
+.env
+.env*.local
+
+# macOS system files
+.DS_Store
+
+# Miscellaneous
+*.pem
+
+# Logs
+logs/
+*.log
