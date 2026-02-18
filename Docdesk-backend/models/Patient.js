@@ -144,4 +144,17 @@ userSchema.methods.comparePassword = function (candidatePassword) {
   });
 };
 
+userSchema.set('toJSON', {
+  transform: function (doc, ret, options) {
+    delete ret.password;
+    delete ret.refreshToken;
+    delete ret.resetPasswordOTP;
+    delete ret.resetPasswordOTPExpires;
+    delete ret.emailVerificationOTP;
+    delete ret.emailVerificationExpires;
+    return ret;
+  }
+});
+
+
 module.exports = mongoose.model("Patient", userSchema);

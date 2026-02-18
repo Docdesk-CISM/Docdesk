@@ -24,13 +24,58 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
-//Get all doctors
+/**
+ * @swagger
+ * /api/doctors:
+ *   get:
+ *     summary: Get all doctors
+ *     tags: [Doctors]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all doctors
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       401:
+ *         description: Unauthorized
+ */
 const getDoctors = async (req, res) => {
-  const doctors = await DocModel.find({}).sort({ createdAt: -1 });
+  const doctors = await DocModel.find({})
+    .select('-password -refreshToken -resetPasswordOTP -resetPasswordOTPExpires')
+    .sort({ createdAt: -1 });
   res.status(200).json(doctors);
 };
 
-//Get a single doctor by ID
+/**
+ * @swagger
+ * /api/doctors/{id}:
+ *   get:
+ *     summary: Get a doctor by ID
+ *     tags: [Doctors]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The doctor ID
+ *     responses:
+ *       200:
+ *         description: Doctor found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: Doctor not found or invalid ID
+ */
 const getDoctor = async (req, res) => {
   const { id } = req.params;
 
@@ -38,7 +83,9 @@ const getDoctor = async (req, res) => {
     return res.status(404).json({ error: "No such Doctor" });
   }
 
-  const doc = await DocModel.findById(id);
+  const doc = await DocModel.findById(id)
+    .select('-password -refreshToken -resetPasswordOTP -resetPasswordOTPExpires');
+    
   if (!doc) {
     return res.status(400).json({ error: "No such Doctor" });
   }
@@ -163,7 +210,6 @@ const uploadProfileImage = async (req, res) => {
   }
 };
 
-
 const getPatientsWithAccess = async (req, res) => {
   const { id } = req.params;
 
@@ -172,14 +218,16 @@ const getPatientsWithAccess = async (req, res) => {
   }
 
   const doctor = await DocModel.findById(id)
-    .populate("accessPatients")
+    .populate({
+      path: 'accessPatients',
+      select: '-password -refreshToken -resetPasswordOTP -resetPasswordOTPExpires -emailVerificationOTP -emailVerificationExpires'
+    })
     .select("accessPatients")
     .exec();
+    
   if (!doctor) {
     return res.status(400).json({ error: "No such Doctor" });
   }
-
-  // console.log(doctor.accessPatients);
 
   res.status(200).json(doctor.accessPatients);
 };

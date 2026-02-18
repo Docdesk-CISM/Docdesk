@@ -113,4 +113,14 @@ doctorSchema.methods.comparePassword = function (candidatePassword) {
   });
 };
 
+doctorSchema.set('toJSON', {
+  transform: function (doc, ret, options) {
+    delete ret.password;
+    delete ret.refreshToken;
+    delete ret.resetPasswordOTP;
+    delete ret.resetPasswordOTPExpires;
+    return ret;
+  }
+});
+
 module.exports = mongoose.model("Doctor", doctorSchema);

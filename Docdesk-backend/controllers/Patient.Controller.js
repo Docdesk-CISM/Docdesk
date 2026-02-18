@@ -23,26 +23,74 @@ const storage = new CloudinaryStorage({
 
 const upload = multer({ storage: storage });
 
-//get all Patients
+
+/**
+ * @swagger
+ * /api/patients:
+ *   get:
+ *     summary: Get all patients
+ *     tags: [Patients]
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all patients
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *       401:
+ *         description: Unauthorized
+ */
+
 const getPatients = async (req, res) => {
-  const Patients = await Patient.find({}).sort({ createdAt: -1 });
-  // console.log(Patients);
+  const Patients = await Patient.find({})
+    .select('-password -refreshToken -resetPasswordOTP -resetPasswordOTPExpires -emailVerificationOTP -emailVerificationExpires')
+    .sort({ createdAt: -1 });
   res.status(200).json(Patients);
 };
 
-//get a single Patient
+
+/**
+ *  @swagger
+ * /api/patients/{id}:
+ *   get:
+ *     summary: Get a patient by ID
+ *     tags: [Patients]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The patient ID
+ *     responses:
+ *       200:
+ *         description: Patient found
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *       404:
+ *         description: Patient not found or invalid ID
+ */
+
 const getPatient = async (req, res) => {
   const { id } = req.params;
   if (!mongoose.Types.ObjectId.isValid(id)) {
     return res.status(404).json({ error: "Invalid patient ID" });
   }
 
-  const patient = await Patient.findById(id);
+  const patient = await Patient.findById(id)
+    .select('-password -refreshToken -resetPasswordOTP -resetPasswordOTPExpires -emailVerificationOTP -emailVerificationExpires');
 
   if (!patient) {
     return res.status(404).json({ error: "No such patient" });
   }
-  // console.log(patient);
   res.status(200).json(patient);
 };
 
