@@ -22,6 +22,63 @@ services:
       timeout: 5s
       retries: 5
 
+  backend:
+    build:
+      context: ./Docdesk-backend
+    container_name: docdesk-backend
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://admin:admin123@mongodb:27017/docdesk?authSource=admin
+      - ALLOWED_ORIGINS=http://localhost:3000,http://localhost:8081
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - docdesk-network
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:5000/api/" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  admin-portal:
+    build:
+      context: ./Dockdesk-admin-portal
+    container_name: docdesk-admin-portal
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - docdesk-network
+
+  frontend:
+    build:
+      context: ./Dockdesk-frontend
+    container_name: docdesk-frontend
+    restart: unless-stopped
+    ports:
+      - "8081:80"
+    depends_on:
+      - backend
+    networks:
+      - docdesk-network
+
+  zap:
+    image: ghcr.io/zaproxy/zaproxy:stable
+    container_name: docdesk-zap
+    command: zap-baseline.py -t http://docdesk-backend:5000/api/ -r baseline_report.html
+    volumes:
+      - ./zap-reports:/zap/wrk:rw
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - docdesk-network
 
 volumes:
   mongodb_data:

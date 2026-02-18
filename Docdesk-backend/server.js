@@ -2,7 +2,7 @@ require("dotenv").config();
 const mongoose = require("mongoose");
 const cors = require("cors");
 const express = require("express");
-const { swaggerUi, specs } = require("./swagger");
+// const { swaggerUi, specs } = require("./swagger");
 
 const helmet = require("helmet");
 
@@ -48,7 +48,7 @@ app.use((req, res, next) => {
 });
 
 // Swagger documentation route
-app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
+// app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(specs));
 
 // routes
 const RoutesIndex = require("./routes/routesIndex");
