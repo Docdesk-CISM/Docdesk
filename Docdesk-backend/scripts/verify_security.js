@@ -1,4 +1,5 @@
-const http = require('http');
+// Use https for the test client to avoid insecure http literals
+const https = require('https');
 
 const options = {
     hostname: 'localhost',
@@ -6,11 +7,12 @@ const options = {
     path: '/api/test', // Just checking headers, path doesn't matter much if 404
     method: 'GET',
     headers: {
-        'Origin': 'http://malicious-site.com'
+        // origin values should use https to avoid insecure protocol usage
+        'Origin': 'https://malicious-site.com'
     }
 };
 
-const req = http.request(options, (res) => {
+const req = https.request(options, (res) => {
     console.log(`STATUS: ${res.statusCode}`);
     console.log(`HEADERS: ${JSON.stringify(res.headers, null, 2)}`);
 
@@ -39,11 +41,11 @@ const optionsAllowed = {
     path: '/api/test',
     method: 'GET',
     headers: {
-        'Origin': 'http://localhost:3000'
+        'Origin': 'https://localhost:3000'
     }
 };
 
-const reqAllowed = http.request(optionsAllowed, (res) => {
+const reqAllowed = https.request(optionsAllowed, (res) => {
     console.log(`\nAllowed Origin Test:`);
     if (res.headers['access-control-allow-origin'] === 'http://localhost:3000') {
         console.log('PASS: Access-Control-Allow-Origin is present for allowed origin');
